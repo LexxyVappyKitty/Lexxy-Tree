@@ -42,7 +42,7 @@ addLayer("m", {
             description: "Makes multiplier actually multiply points.",
             cost: new Decimal(9),
             effect() {
-                return player[this.layer].points.add(1).log(10)
+                return player[this.layer].points.add(1).log(10).add(1)
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect
         },
@@ -61,7 +61,7 @@ addLayer("m", {
             description: "Further synergizes multiplier and points.",
             cost: new Decimal(240),
             effect() {
-                return player.points.add(100).log(100)
+                return player.points.add(1).log(100).add(1)
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
         },
