@@ -61,7 +61,7 @@ addLayer("m", {
             description: "Further synergizes multiplier and points.",
             cost: new Decimal(240),
             effect() {
-                return player.points.add(1).log(100)
+                return player.points.add(100).log(100)
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
         },
