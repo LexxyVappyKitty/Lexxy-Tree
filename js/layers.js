@@ -15,6 +15,8 @@ addLayer("m", {
     exponent: 0.6, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
+        if (hasUpgrade('m', 21)) mult = mult.times(2)
+        if (hasUpgrade('m', 23)) mult = mult.times(upgradeEffect('m', 23))
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -31,14 +33,37 @@ addLayer("m", {
             cost: new Decimal(1),
         },
         12: {
-            title: "A Second Double",
-            description: "Doubles point gain again.",
+            title: "Triplicator",
+            description: "Triples point gain.",
             cost: new Decimal(4),
         },
         13: {
-            title: "Triplicator",
-            description: "Triples point gain.",
-            cost: new Decimal(12),
+            title: "Unlock the Multiplier",
+            description: "Makes multiplier actually multiply points.",
+            cost: new Decimal(9),
+            effect() {
+                return player[this.layer].points.add(1).log(10)
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect
+        },
+        21: {
+            title: "Base Improvement",
+            description: "Doubles multiplier gain.",
+            cost: new Decimal(25),
+        },
+        22: {
+            title: "Octupler",
+            description: "Multiplies point gain by 8.",
+            cost: new Decimal(100),
+        },
+        23: {
+            title: "Overpower",
+            description: "Further synergizes multiplier and points.",
+            cost: new Decimal(240),
+            effect() {
+                return player.points.add(1).log(100)
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
         },
     },
     layerShown(){return true}
