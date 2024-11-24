@@ -17,11 +17,16 @@ addLayer("m", {
         mult = new Decimal(1)
         if (hasUpgrade('m', 21)) mult = mult.times(2)
         if (hasUpgrade('m', 23)) mult = mult.times(upgradeEffect('m', 23))
+        if (hasMilestone('r', 0)) mult = mult.times(2)
+        if (hasUpgrade('r', 11)) mult = mult.times(2)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
         return new Decimal(1)
     },
+    passiveGeneration() {
+        if (hasMilestone('r',2)) return 0.001
+        return 0},
     row: 0, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
         {key: "m", description: "M: gain Multiplier", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
@@ -42,6 +47,7 @@ addLayer("m", {
             description: "Makes multiplier actually multiply points.",
             cost: new Decimal(9),
             effect() {
+                if (hasUpgrade('r', 13)) return player[this.layer].points.add(1).log(8.88).add(1)
                 return player[this.layer].points.add(1).log(10).add(1)
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect
@@ -61,6 +67,7 @@ addLayer("m", {
             description: "Further synergizes multiplier and points.",
             cost: new Decimal(240),
             effect() {
+                if (hasUpgrade('r', 13)) return player.points.add(1).log(92).add(1)
                 return player.points.add(1).log(100).add(1)
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
@@ -84,7 +91,7 @@ addLayer("r", {
     baseAmount() {return player['m'].points}, // Get the current amount of baseResource
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     base: 4,
-    exponent: 1.25, // Prestige currency exponent
+    exponent: 0.777, // Prestige currency exponent
     canBuyMax() {return true},
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
@@ -97,4 +104,51 @@ addLayer("r", {
     hotkeys: [
         {key: "r", description: "R: Rebirth", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
+    milestones: {
+        0: {
+            requirementDescription: "1 Rebirth",
+            effectDescription: "Point gain is tripled, and Multiplier gain is doubled.",
+            done() { return player['r'].points.gte(1) }
+        },
+        1: {
+            requirementDescription: "2 Rebirths",
+            effectDescription: "Rebirths boost Multiplier gain.",
+            done() { return player['r'].points.gte(2) },
+            effect() {
+                return player['r'].points.add(1).pow(0.5)
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
+        },
+        2: {
+            requirementDescription: "4 Rebirths",
+            effectDescription: "Passively gain 1/1000 of your Multiplier gain every second.",
+            done() { return player['r'].points.gte(4) },
+        },
+        3: {
+            requirementDescription: "7 Rebirths",
+            effectDescription: "Unlock the third row of Multiplier Upgrades and the second row of Rebirth upgrades [NOT IMPLEMENTED YET].",
+            done() { return player['r'].points.gte(7) }
+        },
+    },
+    upgrades: {
+    11: {
+        title: "New Life",
+        description: "Applies the First Rebirth Milestone again.",
+        cost: new Decimal(2),
+    },
+    12: {
+        title: "A Point Reborn",
+        description: "Applies the Second Rebirth Milestone to Points, with an improved effect.",
+        cost: new Decimal(3),
+        effect() {
+            return player['r'].points.add(1).pow(0.7)
+        },
+        effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
+    },
+    13: {
+        title: "Multiplied Improvements",
+        description: "Slightly improves the formulae for Multiplier Upgrades 13 and 23.",
+        cost: new Decimal(5),
+    },
+    }
 })

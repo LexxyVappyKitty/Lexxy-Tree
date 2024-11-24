@@ -1,6 +1,6 @@
 let modInfo = {
 	name: "The Generic Prestige Tree",
-	author: "nobody",
+	author: "LexxyVappyKitty",
 	pointsName: "points",
 	modFiles: ["layers.js", "tree.js"],
 
@@ -12,16 +12,17 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0.0.0",
-	name: "Baseline Indev",
+	num: "0.0.0.1",
+	name: "Be Reborn",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v0.0.0.0</h3><br>
-		- Game is now indev!.<br>
-		- Added baseline features.`
+	<h3>v0.0.0.1</h3><br>
+		- Game is in indev!.<br>
+		- Added Rebirth.
+		- More features to come!`
 
-let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
+let winText = `Your points have broken, and you will have to do a hard reset. Sorry!`
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
 // (The ones here are examples, all official functions are already taken care of)
@@ -38,13 +39,14 @@ function canGenPoints(){
 
 // Calculate points/sec!
 function getPointGen() {
-	if(!canGenPoints())
-		return new Decimal(0)
 	let gain = new Decimal(1)
 	if (hasUpgrade('m', 11)) gain = gain.times(2)
 	if (hasUpgrade('m', 12)) gain = gain.times(2)		
 	if (hasUpgrade('m', 13)) gain = gain.times(upgradeEffect('m', 13))
 	if (hasUpgrade('m', 22)) gain = gain.times(4)
+	if (hasMilestone('r', 0)) gain = gain.times(3)
+	if (hasUpgrade('r', 11)) gain = gain.times(3)
+	if (hasUpgrade('r', 12)) gain = gain.times(upgradeEffect('r', 12))
 	return gain
 }
 
