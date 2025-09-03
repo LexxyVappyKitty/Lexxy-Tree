@@ -12,15 +12,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0.0.1",
-	name: "Be Reborn",
+	num: "0.0.0.2",
+	name: "Capitalism At Its Finest",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v0.0.0.1</h3><br>
-		- Game is in indev!.<br>
-		- Added Rebirth.
-		- More features to come!`
+	<h3>v0.0.0.2</h3><br>
+		- Game is in indev, coming back after 3 years!.<br>
+		- Added Money!<br>
+		- Added 12 Upgrades, 7 Milestones, and 4 Buyables!<br>
+		- More features to come!<br>`
 
 let winText = `Your points have broken, and you will have to do a hard reset. Sorry!`
 
@@ -44,7 +45,14 @@ function getPointGen() {
 	if (hasUpgrade('m', 12)) gain = gain.times(3)		
 	if (hasUpgrade('m', 13)) gain = gain.times(upgradeEffect('m', 13))
 	if (hasUpgrade('m', 22)) gain = gain.times(4)
-	if (hasUpgrade('m', 23)) mult = mult.times(upgradeEffect('m', 23))
+	if (hasUpgrade('m', 23)) gain = gain.times(upgradeEffect('m', 23))
+	if (hasUpgrade('m', 32)) gain = gain.times(5)
+	if (hasUpgrade('m', 34)) gain = gain.times(upgradeEffect('m', 34))
+	if (hasMilestone('m', 4)) gain = gain.times(2)
+	
+	if (hasUpgrade('mo', 13)) gain = gain.times(3.5)	
+	if (getBuyableAmount('mo',21).gte(1)) mult = mult.times(buyableEffect('mo',21))
+
 	if (hasMilestone('r', 0)) gain = gain.times(3)
 	if (hasUpgrade('r', 11)) gain = gain.times(3)
 	if (hasUpgrade('r', 12)) gain = gain.times(upgradeEffect('r', 12))
