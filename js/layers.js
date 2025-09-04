@@ -35,7 +35,7 @@ addLayer("m", {
     },
     passiveGeneration() {
         mult = new Decimal(0)
-
+        
         if (hasMilestone('r',2)) mult = mult.add(0.001)
         if (getBuyableAmount('mo',11).gte(1)) mult = mult.times(buyableEffect('mo',11))
 
@@ -302,11 +302,12 @@ addLayer("mo", {
     
     buyables: {
     11: {
-        cost(x) { return new Decimal(10).pow(x.times(0.1).add(1)) },
+        cost() { return new Decimal(10).pow(getBuyableAmount(this.layer, this.id).times(0.1).add(1)) },
         title: "Autospawner",
-        display() { return "Multiplier Passive Generation increased by 100%." },
+        display() { return "Multiplier Passive Generation increased by 100%.<br>You have "+getBuyableAmount(this.layer, this.id)+"<br>Cost: "+this.cost()+"<br>Currently: x"+this.upgradeEffect() },
         canAfford() { return player[this.layer].points.gte(this.cost()) },
-        effect(x) {return x.add(1)},
+        effect() {if (getBuyableAmount(this.layer, this.id).lt(1)) return new Decimal(1)
+            else return getBuyableAmount(this.layer, this.id).add(1)},
         buy() {
             player[this.layer].points = player[this.layer].points.sub(this.cost())
             setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
