@@ -39,7 +39,8 @@ addLayer("m", {
         if (hasMilestone('r',2)) mult = mult.add(0.001)
         if (getBuyableAmount('mo',11).gte(1)) mult = mult.add(buyableEffect('mo',11))
 
-        return 0},
+        return mult
+    },
     row: 0, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
         {key: "m", description: "M: gain Multiplier", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
@@ -291,16 +292,15 @@ addLayer("mo", {
     baseResource: "multiplier", // Name of resource prestige is based on
     baseAmount() {return player['m'].points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    base: 4,
     exponent: 0.8, // Prestige currency exponent
-    layerShown() {return hasUpgrade('m', 35)},
+    layerShown() {return hasUpgrade('m', 35) || player['mo'].points.gte(1)},
     canBuyMax() {return true},
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         if (hasMilestone('m', 0)) mult = mult.times(1.57)
 	    if (hasMilestone('m', 4)) mult = mult.times(2)
         if (hasMilestone('r', 5)) mult = mult.times(2)
-        if (hasUpgrade('mo', 11)) gain = gain.times(1.5)
+        if (hasUpgrade('mo', 11)) mult = mult.times(1.5)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -312,7 +312,7 @@ addLayer("mo", {
     11: {
         cost(x) { return new Decimal(10).pow(x.times(0.1).add(1)) },
         title: "Autospawner",
-        display(x) { return "Multiplier Passive Generation increased<br>"+x+" Owned<br>Cost: "+this.cost(x)+"<br>Current effect: +x"+this.effect(x) },
+        display(x) { return "Multiplier Passive Generation increased.<br>"+x+" Owned<br>Cost: "+this.cost(x)+"<br>Current effect: +x"+this.effect(x) },
         canAfford() { return player[this.layer].points.gte(this.cost()) },
         effect(x) {return x.times(0.001)},
         buy() {
@@ -324,7 +324,7 @@ addLayer("mo", {
     12: {
         cost(x) { return new Decimal(25).pow(x.times(0.5).add(1)) },
         title: "Discount Card",
-        display() { return "A small discount on Rebirth prices." },
+        display() { return "Rebirth prices slightly reduced.<br>"+x+" Owned<br>Cost: "+this.cost(x)+"<br>Current effect: /"+this.effect(x)},
         canAfford() { return player[this.layer].points.gte(this.cost()) },
         effect(x) {return x.times(0.2).add(1)},
         buy() {
@@ -335,7 +335,7 @@ addLayer("mo", {
     21: {
         cost(x) { return new Decimal(180).pow(x.times(0.05).add(1)) },
         title: "Point Farm",
-        display() { return "Points increased by 25%." },
+        display() { return "Points increased by 25%.<br>"+x+" Owned<br>Cost: "+this.cost(x)+"<br>Current effect: +x"+this.effect(x)},
         canAfford() { return player[this.layer].points.gte(this.cost()) },
         effect(x) {return x.times(0.25).add(1)},
         buy() {
@@ -346,7 +346,7 @@ addLayer("mo", {
     22: {
         cost(x) { return new Decimal(700).pow(x.times(0.04).add(1)) },
         title: "Multiplier Farm",
-        display() { return "Multiplier increased by 10%." },
+        display() { return "Multiplier increased by 10%.<br>"+x+" Owned<br>Cost: "+this.cost(x)+"<br>Current effect: +x"+this.effect(x) },
         canAfford() { return player[this.layer].points.gte(this.cost()) },
         effect(x) {return x.times(0.1).add(1)},
         buy() {

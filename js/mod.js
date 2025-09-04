@@ -1,5 +1,5 @@
 let modInfo = {
-	name: "The Generic Prestige Tree",
+	name: "Perfectly Balanced Tree",
 	author: "LexxyVappyKitty",
 	pointsName: "points",
 	modFiles: ["layers.js", "tree.js"],
@@ -21,7 +21,8 @@ let changelog = `<h1>Changelog:</h1><br>
 		- Game is in indev, coming back after 3 years!.<br>
 		- Added Money!<br>
 		- Added 12 Upgrades, 7 Milestones, and 4 Buyables!<br>
-		- More features to come!<br>`
+		- More features to come!<br>
+		- Fun Fact: This took a few days to bugfix!`
 
 let winText = `Your points have broken, and you will have to do a hard reset. Sorry!`
 
