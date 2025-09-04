@@ -37,14 +37,16 @@ addLayer("m", {
         mult = new Decimal(0)
         
         if (hasMilestone('r',2)) mult = mult.add(0.001)
-        if (getBuyableAmount('mo',11).gte(1)) mult = mult.times(buyableEffect('mo',11))
+        if (getBuyableAmount('mo',11).gte(1)) mult = mult.add(buyableEffect('mo',11))
 
         return 0},
     row: 0, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
         {key: "m", description: "M: gain Multiplier", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
-
+doReset(resettingLayer){
+    if (hasMilestone('r',4)) layerDataReset(this.layer, ["milestones"])
+},
     milestones: {
         0: {
             requirementDescription: "Jackpot Central - 7,777,777 Points",
@@ -123,16 +125,19 @@ addLayer("m", {
             title: "Underscore",
             description: "Slightly improves the Rebirth Price formula.",
             cost: new Decimal(40000),
+                    unlocked() {return hasMilestone('r', 3)},
         },
         32: {
             title: "Quintupler",
             description: "Multiplies point gain by 5.",
             cost: new Decimal(80000),
+                    unlocked() {return hasMilestone('r', 3)},
         },
         33: {
             title: "A Baseline of Grinding",
             description: "Foreshadows the Scaling, triples Multiplier.",
             cost: new Decimal(133337),
+                    unlocked() {return hasMilestone('r', 3)},
         },
         34: {
             title: "Fractal Geometry I",
@@ -141,11 +146,14 @@ addLayer("m", {
                 return player.points.add(1).log(75).add(2)
             },
             cost: new Decimal(888888),
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" },
+                    unlocked() {return hasMilestone('r', 3)},
         },
         35: {
             title: "Capitalism",
             description: "Unlocks Money, a capitalistic layer besides rebirths.",
             cost: new Decimal(2000000),
+                    unlocked() {return hasMilestone('r', 3)},
         },
     },
     layerShown(){return true}
@@ -211,7 +219,7 @@ addLayer("r", {
         },
         4: {
             requirementDescription: "Qualitree - 15 Rebirths",
-            effectDescription: "The first row of Multiplier upgrades no longer resets on Rebirth.",
+            effectDescription: "Multiplier Milestones no longer reset on Rebirth.",
             unlocked() {return hasUpgrade('r', 23)},
             done() { return player['r'].points.gte(15) && hasUpgrade('r', 23) }
         },
@@ -302,12 +310,11 @@ addLayer("mo", {
     
     buyables: {
     11: {
-        cost() { return new Decimal(10).pow(getBuyableAmount(this.layer, this.id).times(0.1).add(1)) },
+        cost(x) { return new Decimal(10).pow(x.times(0.1).add(1)) },
         title: "Autospawner",
-        display() { return "Multiplier Passive Generation increased by 100%.<br>You have "+getBuyableAmount(this.layer, this.id)+"<br>Cost: "+this.cost()+"<br>Currently: x"+this.upgradeEffect() },
+        display(x) { return "Multiplier Passive Generation increased<br>"+x+" Owned<br>Cost: "+this.cost(x)+"<br>Current effect: +x"+this.effect(x) },
         canAfford() { return player[this.layer].points.gte(this.cost()) },
-        effect() {if (getBuyableAmount(this.layer, this.id).lt(1)) return new Decimal(1)
-            else return getBuyableAmount(this.layer, this.id).add(1)},
+        effect(x) {return x.times(0.001)},
         buy() {
             player[this.layer].points = player[this.layer].points.sub(this.cost())
             setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
@@ -315,7 +322,7 @@ addLayer("mo", {
         
     },
     12: {
-        cost(x) { return new Decimal(4000).pow(x.times(0.05).add(1)) },
+        cost(x) { return new Decimal(25).pow(x.times(0.5).add(1)) },
         title: "Discount Card",
         display() { return "A small discount on Rebirth prices." },
         canAfford() { return player[this.layer].points.gte(this.cost()) },
